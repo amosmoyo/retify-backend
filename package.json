@@ -1,0 +1,16 @@
+{
+  "name": "retify-backend",
+  "version": "1.0.0",
+  "description": "employment rating application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "mongodb"
+  ],
+  "author": "amosmoyo",
+  "license": "MIT"
+}
