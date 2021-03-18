@@ -38,9 +38,11 @@ This starter uses [Parcel](https://parceljs.org/getting_started.html) as the bun
 
 ## Authors
 
-* Amos Moyo - TTL
-* Lee Kigo
-* Timoth Nasibu
+| Name          | Role | Email        |
+|---------------|------|--------------|
+| Amos Moyo     | TTL  | amosmoyo5300 |
+| Lee Kigo      | Dev  |              |
+| Timothy Nasib | Dev  |              |
 
 ## Contributing
 
