@@ -4,6 +4,8 @@ const morgan = require('morgan');
 
 const mongoose = require('mongoose');
 
+const userRoutes = require('./routes/userAuth');
+
 const DB = process.env.LOCALDB_URL;
 
 console.log(process.env.LOCALDB_URL);
@@ -21,8 +23,6 @@ const app = express();
 
 app.use(morgan('combined'));
 
-app.get('/', (req, res) => {
-  res.send('Hello world');
-});
+app.use('/api/v1/users', userRoutes);
 
 module.exports = app;
