@@ -11,8 +11,9 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    unique: [true, 'The user email exist'],
+    lowercase: true,
     required: [true, 'A user must have an email'],
-    unique: true,
     validate: [validator.isEmail, 'Please provide a valid email ']
   },
   password: {
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: function (passConfData) {
         const data = passConfData;
-        return data;
+        return data === this.password;
       },
       message: 'The passwords do not match'
     }

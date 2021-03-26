@@ -8,6 +8,12 @@ const userRoutes = require('./routes/userAuth');
 
 const DB = process.env.LOCALDB_URL;
 
+const app = express();
+
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
 console.log(process.env.LOCALDB_URL);
 
 mongoose
@@ -18,8 +24,6 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
-
-const app = express();
 
 app.use(morgan('combined'));
 
