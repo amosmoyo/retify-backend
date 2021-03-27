@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'A user must have a password'],
-    minlength: [8, 'The password must greater than 8 characters']
+    minlength: [8, 'The password must greater than 8 characters'],
+    select: false
   },
   passwordCornfirm: {
     type: String,
@@ -54,5 +55,10 @@ userSchema.pre('save', async function (next) {
   this.passwordCornfirm = undefined;
   next();
 });
+
+userSchema.methods.comparePasswords = async function (loginPass, signupPass) {
+  console.log('Amso');
+  return await bycrypt.compare(loginPass, signupPass);
+};
 
 module.exports = mongoose.model('USERS', userSchema);

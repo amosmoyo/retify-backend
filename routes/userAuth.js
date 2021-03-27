@@ -8,4 +8,6 @@ console.log(userAuth.signup);
 
 router.route('/signup').post(userAuth.signup);
 
+router.route('/login').post(userAuth.login);
+
 module.exports = router;
