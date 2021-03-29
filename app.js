@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/userAuth');
 
+const rating = require('./routes/rating');
+
 const DB = process.env.LOCALDB_URL;
 
 const app = express();
@@ -27,6 +29,12 @@ mongoose
 
 app.use(morgan('combined'));
 
+app.use((req, res, next) => {
+  console.log(req.headers);
+  next();
+});
+
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/rating', rating);
 
 module.exports = app;

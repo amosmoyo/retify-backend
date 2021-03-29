@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
       message: 'The passwords do not match'
     }
   },
+  passwordChangeAt: {
+    type: Date
+  },
   phoneNumber: {
     type: Number,
     unique: [true, 'The phone number must be unique']
@@ -59,6 +62,17 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePasswords = async function (loginPass, signupPass) {
   console.log('Amso');
   return await bycrypt.compare(loginPass, signupPass);
+};
+
+userSchema.methods.passwordChangeAfter = function (jwtTimeStamp) {
+  if (this.passwordChangeAt) {
+    const changedTimestamp = parseInt(this.passwordChangeAt.getTime() / 1000, 10);
+    console.log(changedTimestamp - jwtTimeStamp);
+    return jwtTimeStamp < changedTimestamp;
+  }
+
+  // password not changed (jwtTimeStamp) < changedTimestamp -> passcreation time
+  return false;
 };
 
 module.exports = mongoose.model('USERS', userSchema);
