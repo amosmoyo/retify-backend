@@ -107,7 +107,6 @@ exports.protectRoutes = async (req, res, next) => {
     req.user = existingUser;
     next();
   } catch (error) {
-    console.log(process.env.EXPIRATION);
     console.log('Myeeeeerrrr', error);
     return res.status(401).json({
       status: 'fail',
