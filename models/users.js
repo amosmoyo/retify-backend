@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
   passwordChangeAt: {
     type: Date
   },
+  role: {
+    type: String,
+    enum: ['user', 'organization', 'admin'],
+    default: 'user'
+  },
   phoneNumber: {
     type: Number,
     unique: [true, 'The phone number must be unique']
@@ -60,7 +65,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.methods.comparePasswords = async function (loginPass, signupPass) {
-  console.log('Amso');
+  console.log('Amos');
   return await bycrypt.compare(loginPass, signupPass);
 };
 

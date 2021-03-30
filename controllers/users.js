@@ -8,7 +8,18 @@ exports.signup = async (req, res) => {
   console.log(req.body.name);
 
   try {
-    const user = await USERS.create(req.body);
+    const user = await USERS.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      passwordCornfirm: req.body.passwordCornfirm,
+      passwordChangeAt: req.body.passwordChangeAt,
+      role: req.body.role,
+      phoneNumber: req.body.phoneNumber,
+      idNumber: req.body.idNumber,
+      gender: req.body.gender
+    });
+
     console.log(user);
 
     const token = jwt.sign({ id: user._id }, process.env.SECRETKEY, { expiresIn: process.env.EXPIRATION });
@@ -113,4 +124,15 @@ exports.protectRoutes = async (req, res, next) => {
       message: error
     });
   }
+};
+
+exports.roles = (...roles) => (req, res, next) => {
+  if (!roles.includes(req.user.role)) {
+    return res.status(403).json({
+      status: 'fail',
+      message: 'You are not permitted to carryout this operations'
+    });
+  }
+
+  next();
 };
