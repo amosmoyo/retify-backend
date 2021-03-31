@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const crypto = require('crypto');
+
 const validator = require('validator');
 
 const bycrypt = require('bcryptjs');
@@ -51,6 +53,12 @@ const userSchema = new mongoose.Schema({
   },
   gender: {
     type: String
+  },
+  passwordResetToken: {
+    type: String
+  },
+  passwordResetExpire: {
+    type: Date
   }
 });
 
@@ -78,6 +86,19 @@ userSchema.methods.passwordChangeAfter = function (jwtTimeStamp) {
 
   // password not changed (jwtTimeStamp) < changedTimestamp -> passcreation time
   return false;
+};
+
+// Generate a random fake token to stand in the place of jwt
+userSchema.methods.creatPasswordResetToken = function () {
+  // a weak random token
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  // encrypting the token for safer storage and storing it in the database
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetExpire = Date.now() + 10 * 60 * 1000;
+
+  console.log({ resetToken }, this.passwordResetToken, this.passwordResetExpire, '%%%%%');
+
+  return resetToken;
 };
 
 module.exports = mongoose.model('USERS', userSchema);

@@ -4,6 +4,8 @@ const util = require('util');
 
 const USERS = require('../models/users');
 
+const sendData = require('../utils/email');
+
 exports.signup = async (req, res) => {
   console.log(req.body.name);
 
@@ -19,8 +21,6 @@ exports.signup = async (req, res) => {
       idNumber: req.body.idNumber,
       gender: req.body.gender
     });
-
-    console.log(user);
 
     const token = jwt.sign({ id: user._id }, process.env.SECRETKEY, { expiresIn: process.env.EXPIRATION });
 
@@ -136,3 +136,43 @@ exports.roles = (...roles) => (req, res, next) => {
 
   next();
 };
+
+exports.passwordForget = async (req, res) => {
+  // find the user who password is forgotten
+  const user = await USERS.findOne({ email: req.body.email });
+  // validate the pressence of the user
+  if (!user) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'There is no user with that email in this DB'
+    });
+  }
+
+  // Generate a random fake token to stand in the place of jwt
+  const resetToken = user.creatPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resetToken}`;
+
+  const text = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+  try {
+    await sendData({ email: user.email, subject: 'You password reset token (valid for 10 min)', text });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'You can confirm your email a password reset token has been send'
+    });
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+    console.log(error);
+    return res.status(500).json({
+      status: 'fail',
+      message: error
+    });
+  }
+};
+
+exports.resetPassword = (req, res) => {};
