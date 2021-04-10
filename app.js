@@ -30,11 +30,11 @@ mongoose
 app.use(morgan('combined'));
 
 app.use((req, res, next) => {
-  console.log(req.headers);
+  console.log(req.headers, req.userdata, 'ooo');
   next();
 });
 
-app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/rating', rating);
+app.use('/api/v1/users', userRoutes);
 
 module.exports = app;

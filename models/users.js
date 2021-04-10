@@ -72,19 +72,33 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// setting the time default time at which a password  was reset
+userSchema.pre('save', async function (next) {
+  // this middleware chakes weather the password has been changed or not
+  if (!this.isModified('password') || this.isMew) {
+    return next();
+  }
+
+  this.passwordChangeAt = await (Date.now() - 1000); // one second (1sec === 1000 millisecond)
+  next();
+});
+
+// valiadte the user password during login
 userSchema.methods.comparePasswords = async function (loginPass, signupPass) {
-  console.log('Amos');
   return await bycrypt.compare(loginPass, signupPass);
 };
 
 userSchema.methods.passwordChangeAfter = function (jwtTimeStamp) {
   if (this.passwordChangeAt) {
+    console.log(this.passwordChangeAt, 'kiikik');
     const changedTimestamp = parseInt(this.passwordChangeAt.getTime() / 1000, 10);
     console.log(changedTimestamp - jwtTimeStamp);
+    console.log(jwtTimeStamp < changedTimestamp, 'lkkikik', changedTimestamp, jwtTimeStamp);
     return jwtTimeStamp < changedTimestamp;
   }
 
   // password not changed (jwtTimeStamp) < changedTimestamp -> passcreation time
+  console.log('i know');
   return false;
 };
 

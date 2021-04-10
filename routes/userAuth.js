@@ -14,4 +14,6 @@ router.route('/forgotpassword').post(userAuth.passwordForget);
 
 router.route('/resetpassword/:token').patch(userAuth.resetPassword);
 
+router.route('/updatepassword').patch(userAuth.protectRoutes, userAuth.passwordUpdate);
+
 module.exports = router;
