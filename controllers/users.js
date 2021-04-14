@@ -10,6 +10,7 @@ const sendData = require('../utils/email');
 
 // Create a status message
 const statusMessage = (user, statusCode, res) => {
+  console.log(process.env.EXPIRATION);
   const token = jwt.sign({ id: user._id }, process.env.SECRETKEY, { expiresIn: process.env.EXPIRATION });
 
   res.status(statusCode).json({
@@ -96,6 +97,8 @@ exports.protectRoutes = async (req, res, next) => {
     const decoded = await util.promisify(jwt.verify)(token, process.env.SECRETKEY);
 
     const existingUser = await USERS.findOne({ _id: decoded.id });
+
+    console.log(existingUser, 'i am login');
 
     if (!existingUser) {
       return res.status(401).json({

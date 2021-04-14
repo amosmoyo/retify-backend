@@ -59,6 +59,11 @@ const userSchema = new mongoose.Schema({
   },
   passwordResetExpire: {
     type: Date
+  },
+  active: {
+    type: Boolean,
+    default: true,
+    select: false
   }
 });
 
@@ -80,6 +85,12 @@ userSchema.pre('save', async function (next) {
   }
 
   this.passwordChangeAt = await (Date.now() - 1000); // one second (1sec === 1000 millisecond)
+  next();
+});
+
+// find user who are active only
+userSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
   next();
 });
 
